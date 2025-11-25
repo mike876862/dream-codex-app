@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>好運夢境孵化法</title>
+    <style>
+        /* --- CSS 變數與基礎設定 --- */
+        :root {
+            --bg-color: #0f172a; /* 深藍夜空 */
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #fcd34d; /* 夢境金 */
+            --accent-hover: #fbbf24;
+            --success: #4ade80;
+            --border-radius: 12px;
+            --padding-std: 20px;
+            --nav-height: 80px;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        h1, h2, h3 { margin: 0 0 10px 0; font-weight: 600; }
+        p { line-height: 1.6; color: var(--text-muted); margin-bottom: 15px; }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--accent);
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+            appearance: none;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        .fade-out { animation: fadeOut 0.8s forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* --- Intro Video Layer --- */
+        #intro-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        #introVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            display: none; 
+        }
+
+        #intro-start-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        #skip-intro-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 10000;
+            cursor: pointer;
+            display: none; 
+        }
+
+        /* Header & Nav */
+        header {
+            padding: 15px var(--padding-std);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        header h1 { font-size: 18px; margin: 0; color: var(--accent); letter-spacing: 1px; }
+        .help-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 5px; }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--padding-std);
+            padding-bottom: 100px; 
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: #1e293b;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #334155;
+            z-index: 100;
+            padding-bottom: 15px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 8px 0;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .nav-item.active { color: var(--accent); font-weight: bold; opacity: 1; transform: translateY(-2px); }
+        .nav-icon { display: block; font-size: 24px; margin-bottom: 4px; }
+
+        /* UI Elements */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+        .modal-content h2 { color: var(--accent); font-size: 20px; margin-bottom: 15px; }
+        .modal-content p { color: var(--text-main); font-size: 15px; }
+        .modal-content ul { text-align: left; padding-left: 20px; margin-bottom: 20px; }
+        .modal-content li { margin-bottom: 8px; color: var(--text-muted); font-size: 14px; }
+
+        .step-container { text-align: center; padding-top: 10px; }
+        .big-text { font-size: 22px; color: var(--accent); margin: 30px 0; line-height: 1.6; font-weight: 500; }
+        .timer-display { font-size: 56px; font-weight: bold; font-variant-numeric: tabular-nums; margin: 30px 0; color: var(--text-main); text-shadow: 0 0 10px rgba(252, 211, 77, 0.2); }
+        .breath-guide { margin-top: 30px; color: var(--text-muted); font-style: italic; animation: pulse 4s infinite; font-size: 18px; }
+        
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; justify-content: center; }
+        .tag-btn { background: #334155; border: 1px solid transparent; padding: 8px 16px; border-radius: 20px; color: white; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .tag-btn.selected { background: var(--accent); color: #0f172a; font-weight: bold; transform: scale(1.05); }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .action-chip { background: transparent; border: 1px solid #475569; padding: 6px 12px; border-radius: 15px; color: var(--text-muted); font-size: 13px; cursor: pointer; }
+        
+        .history-card { background: var(--card-bg); border-radius: var(--border-radius); padding: 20px; margin-bottom: 15px; border-left: 4px solid var(--accent); cursor: pointer; position: relative; }
+        .history-card::after { content: '▼'; position: absolute; right: 15px; top: 20px; color: #475569; font-size: 12px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .card-date { font-size: 14px; color: var(--text-muted); }
+        .card-theme { font-size: 12px; background: #334155; padding: 2px 8px; border-radius: 4px; color: var(--accent); }
+        .card-preview { font-size: 15px; color: var(--text-main); margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-details { margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155; display: none; }
+        .card-details.expanded { display: block; animation: fadeIn 0.3s; }
+        .detail-block { margin-bottom: 15px; }
+        .detail-label { font-size: 12px; color: var(--accent); margin-bottom: 6px; display: block; letter-spacing: 0.5px; }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin-top: 10px; cursor: pointer; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; }
+        .custom-checkbox { width: 22px; height: 22px; border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .custom-checkbox.checked { background: var(--accent); }
+        .custom-checkbox.checked::after { content: '✓'; color: #0f172a; font-weight: bold; font-size: 14px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-layer">
+        <button id="intro-start-btn" onclick="playIntro()">開始儀式</button>
+        <button id="skip-intro-btn" onclick="endIntro()">跳過</button>
+        <video id="introVideo" playsinline muted webkit-playsinline>
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <audio id="relaxAudio" loop preload="auto">
+        <source src="relax.mp3" type="audio/mpeg">
+    </audio>
+
+    <header>
+        <h1>好運夢境孵化法</h1>
+        <button class="help-btn" onclick="openModal('intro')">?</button>
+    </header>
+
+    <main>
+        <div id="view-ritual" class="view-section">
+            <div id="ritual-step-1" class="step-container fade-in">
+                <h2>Step 1: 設定意向</h2>
+                <p>睡前將雜念清空，專注在一個領域。</p>
+                <label style="display:block; text-align:left; margin-bottom:8px; color:var(--text-muted); font-size:14px;">選擇今天的主題</label>
+                <select id="themeSelect">
+                    <option value="工作">工作</option>
+                    <option value="人際">人際</option>
+                    <option value="財運">財運</option>
+                    <option value="家庭">家庭</option>
+                    <option value="感情">感情</option>
+                    <option value="健康">健康</option>
+                    <option value="創作">創作</option>
+                    <option value="其他">其他</option>
+                </select>
+                <div style="margin-top:20px;">
+                    <input type="text" id="intentionInput" placeholder="例如：明天的會議、與某人的關係、提升財運...">
+                </div>
+                <button class="btn" onclick="generateIntention()">產生意向句</button>
+                <div id="intentionResult" class="hidden" style="margin-top:25px; background:var(--card-bg); padding:20px; border-radius:12px; border: 1px solid #334155;">
+                    <!-- 將英文說明改為中文，使使用者更貼近語境 -->
+                    <p style="margin-bottom:8px; font-size:13px; letter-spacing:1px;">你的意向</p>
+                    <h3 id="intentionText" style="color:var(--accent); margin-bottom:20px; font-size: 20px; line-height: 1.5;"></h3>
+                    <button class="btn" onclick="nextRitualStep(2)">確認並開始放鬆</button>
+                </div>
+            </div>
+
+            <div id="ritual-step-2" class="step-container hidden">
+                <h2>Step 2: 音頻調頻</h2>
+                <p>給自己 3 分鐘，讓心靜下來。</p>
+                <div class="timer-display" id="timerDisplay">03:00</div>
+                <div id="meditationGuide" class="breath-guide hidden">
+                    <p>吸氣... 吐氣...</p>
+                    <p>感覺身體變重...</p>
+                    <p>煩惱隨雲飄散。</p>
+                </div>
+                <button id="startTimerBtn" class="btn" onclick="startRelaxation()">🌙 開始帶著意向冥想 (3 分鐘)</button>
+                <button id="skipTimerBtn" class="btn btn-outline hidden" style="margin-top:20px; border:none; font-size:14px;" onclick="finishTimer()">跳過計時 (測試用)</button>
+            </div>
+
+            <div id="ritual-step-3" class="step-container hidden">
+                <h2>Step 3: 宣告與清理</h2>
+                <p>跟著畫面上的字，小聲唸出來。</p>
+                <div class="big-text" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 16px;">
+                    「我放掉過去！<br>放掉未來！<br><br>我敞開心門，<br>讓好運進來。」
+                </div>
+                <button class="btn" onclick="nextRitualStep(4)">我已經念完了</button>
+            </div>
+
+            <div id="ritual-step-4" class="step-container hidden">
+                <h2>Step 4: 入睡準備</h2>
+                <p>躺下來，雙手交疊放在心口。</p>
+                <div style="background:var(--card-bg); padding:25px; border-radius:12px; margin:20px 0; border:1px solid var(--accent);">
+                    <p style="margin:0; font-size:14px; color:var(--text-muted)">默念三次：</p>
+                    <h3 id="finalIntentionDisplay" style="color:var(--text-main); margin-top:15px; font-size: 20px;"></h3>
+                </div>
+                <button class="btn" onclick="showFinalPrompt()">我已經默念三次</button>
+                <div id="preSleepPrompt" class="hidden fade-in" style="margin-top:40px;">
+                    <div class="big-text" style="font-size:18px;">
+                        今晚，讓夢帶著你前進。<br><br>在快睡著之前，<br>心裡對自己說：<br><br>
+                        <span style="color:var(--text-main); font-weight:bold; font-size:20px;">「我願意接收夢的智慧，<br>告訴我怎麼做。」</span>
+                    </div>
+                    <button class="btn" onclick="finishRitual()">完成今日儀式，晚安</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-wakeup" class="view-section hidden">
+            <div id="wakeup-intro" class="fade-in">
+                <h2>早安，夢見了什麼？</h2>
+                <p>先不要急著起床，回想那些碎片。</p>
+                <div style="margin-top:25px;">
+                    <label class="detail-label">1. 我夢到什麼？(人物/場景/畫面)</label>
+                    <textarea id="dreamInput" placeholder="就算只記得一點點也沒關係..."></textarea>
+                </div>
+                <div style="margin-top:25px;">
+                    <label class="detail-label">2. 我感受如何？</label>
+                    <div class="tags-container" id="feelingsTags">
+                        <button class="tag-btn" onclick="toggleFeeling(this)">放鬆</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">開心</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">緊張</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">害怕</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">難過</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">困惑</button>
+                        <button class="tag-btn" onclick="toggleFeeling(this)">解脫</button>
+                    </div>
+                    <input type="text" id="feelingNoteInput" placeholder="補充說明情緒 (選填)">
+                </div>
+                <div style="margin-top:25px;">
+                    <label class="detail-label">3. 今天的一個「微行動」</label>
+                    <p style="font-size:13px; margin-bottom:10px;">做一件能在 2 分鐘內完成的小事，接住這份好運。</p>
+                    <div class="quick-actions">
+                        <button class="action-chip" onclick="fillAction('整理桌面')">整理桌面</button>
+                        <button class="action-chip" onclick="fillAction('傳訊給朋友')">傳訊給朋友</button>
+                        <button class="action-chip" onclick="fillAction('澆花')">澆花</button>
+                        <button class="action-chip" onclick="fillAction('深呼吸五次')">深呼吸</button>
+                        <button class="action-chip" onclick="fillAction('喝一杯溫水')">喝溫水</button>
+                    </div>
+                    <input type="text" id="actionInput" placeholder="今天的微行動...">
+                </div>
+                <button class="btn" onclick="saveMorningRecord()">儲存這次記錄</button>
+            </div>
+            <div id="wakeup-success" class="hidden" style="text-align:center; padding-top:20px;">
+                <div style="font-size:50px; margin-bottom:10px;">☀️</div>
+                <h2 style="color: var(--success)">記錄已儲存！</h2>
+                <p>今天，你答應自己要做：</p>
+                <div style="background:var(--card-bg); padding:20px; border-radius:12px; margin:20px 0; border-bottom: 4px solid var(--accent);">
+                    <h3 id="displayMicroAction" style="color:var(--text-main); margin:0; font-size: 20px;"></h3>
+                </div>
+                <div class="checkbox-wrapper" onclick="toggleTodayActionDone()" style="justify-content:center; margin-top:20px; background: transparent; border: 1px solid #334155;">
+                    <div id="todayActionCheck" class="custom-checkbox"></div>
+                    <span>我已經完成這個微行動了</span>
+                </div>
+                <button class="btn btn-outline" onclick="switchTab('view-history')" style="margin-top:40px;">查看歷史紀錄</button>
+            </div>
+        </div>
+
+        <div id="view-history" class="view-section hidden">
+            <h2>旅程紀錄</h2>
+            <p>回顧你的夢境與承諾。</p>
+            <div id="historyList"></div>
+        </div>
+    </main>
+
+    <div id="genericModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modalTitle">標題</h2>
+            <div id="modalBody">內容</div>
+            <button class="btn" style="margin-top:20px;" onclick="closeModal()">好</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-item active" onclick="switchTab('view-ritual')" id="nav-ritual">
+            <span class="nav-icon">🌙</span>
+            儀式
+        </div>
+        <div class="nav-item" onclick="switchTab('view-wakeup')" id="nav-wakeup">
+            <span class="nav-icon">☀️</span>
+            記錄
+        </div>
+        <div class="nav-item" onclick="switchTab('view-history')" id="nav-history">
+            <span class="nav-icon">📜</span>
+            歷史
+        </div>
+    </nav>
+
+    <script>
+        const STORAGE_KEY = 'good_dream_journal_v1';
+        let appData = [];
+        let currentRitualData = {}; 
+        let audioInterval;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupIntroFailSafe();
+            prepareRelaxAudio();
+        });
+
+        // --- Intro Video Logic ---
+        function setupIntroFailSafe() {
+            const video = document.getElementById('introVideo');
+            video.addEventListener('error', handleIntroUnavailable);
+        }
+
+        function handleIntroUnavailable() {
+            endIntro(true);
+            openModal('custom', '開場影片無法播放', '找不到 intro.mp4，已直接進入體驗。如需影片，請確認檔案是否隨部署一起放在同一資料夾。');
+        }
+
+        function playIntro() {
+            const video = document.getElementById('introVideo');
+            const btn = document.getElementById('intro-start-btn');
+            const skip = document.getElementById('skip-intro-btn');
+            
+            btn.style.display = 'none'; 
+            video.style.display = 'block'; 
+            skip.style.display = 'block'; 
+            video.currentTime = 0;
+            video.load();
+            video.play().catch(() => {
+                handleIntroUnavailable();
+            });
+            
+            video.onended = function() {
+                endIntro();
+            };
+        }
+
+        function endIntro(forceSkip = false) {
+            const layer = document.getElementById('intro-layer');
+            const video = document.getElementById('introVideo');
+            
+            video.pause();
+            layer.classList.add('fade-out');
+            
+            setTimeout(() => {
+                layer.style.display = 'none';
+                if (!localStorage.getItem('intro_seen')) {
+                    openModal('intro');
+                    localStorage.setItem('intro_seen', 'true');
+                } else if (forceSkip) {
+                    openModal('intro');
+                }
+            }, 800);
+        }
+
+        // --- Main App Logic ---
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) appData = JSON.parse(stored);
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function openModal(type, titleOverride, bodyOverride) {
+            const modal = document.getElementById('genericModal');
+            const titleEl = document.getElementById('modalTitle');
+            const bodyEl = document.getElementById('modalBody');
+
+            if (type === 'intro') {
+                titleEl.innerText = "歡迎來到夢境孵化";
+                bodyEl.innerHTML = `
+                    <p>這是一個簡單的儀式，幫助你透過夢境引導潛意識。</p>
+                    <ul style="text-align:left; color:var(--text-muted); padding-left:20px;">
+                        <li><strong>睡前：</strong>設定意向，讓好運入夢。</li>
+                        <li><strong>入睡：</strong>放下雜念，請求夢的指引。</li>
+                        <li><strong>醒來：</strong>記錄夢境，並執行微行動。</li>
+                    </ul>
+                `;
+            } else if (type === 'custom') {
+                titleEl.innerText = titleOverride;
+                bodyEl.innerHTML = bodyOverride;
+            }
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('genericModal').classList.remove('show');
+        }
+
+        function switchTab(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(viewId === 'view-ritual') document.getElementById('nav-ritual').classList.add('active');
+            if(viewId === 'view-wakeup') {
+                document.getElementById('nav-wakeup').classList.add('active');
+                resetWakeupView();
+            }
+            if(viewId === 'view-history') {
+                document.getElementById('nav-history').classList.add('active');
+                renderHistory();
+            }
+            
+            const audio = document.getElementById('relaxAudio');
+            if(!audio.paused) {
+                audio.pause();
+                clearInterval(audioInterval);
+            }
+        }
+
+        // --- 更新：優化後的產生意向句邏輯 ---
+        function generateIntention() {
+            const theme = document.getElementById('themeSelect').value;
+            const userInput = document.getElementById('intentionInput').value.trim();
+            
+            if (!userInput) {
+                openModal('custom', '請輸入內容', '請寫下你想要變順利的事情。');
+                return;
+            }
+
+            let sentence = '';
+            // 判斷長度決定語氣
+            if (userInput.length <= 4) {
+                // 短詞：能量流動
+                // 使用 "這件事" 取代 "這個領域" 讓句子更自然
+                 sentence = `我願意讓「${userInput}」這件事順利發展。`;
+            } else {
+                // 長句：給予行動指引的句型
+                // 當使用者輸入較長的心願時，強調完成儀式後會獲得清晰的行動方向
+                sentence = `完成儀式後，關於「${userInput}」，我會知道該如何行動，讓事情更加順利。`;
+            }
+
+            document.getElementById('intentionText').innerText = sentence;
+            document.getElementById('intentionResult').classList.remove('hidden');
+            
+            currentRitualData = {
+                date: new Date().toISOString().split('T')[0], 
+                theme: theme,
+                intention: sentence,
+                createdAt: new Date().toISOString(),
+                dreamNote: '',
+                feelings: [],
+                feelingNote: '',
+                microAction: '',
+                microActionDone: false
+            };
+        }
+
+        function nextRitualStep(stepNumber) {
+            for(let i=1; i<=4; i++) {
+                const el = document.getElementById(`ritual-step-${i}`);
+                if(el) el.classList.add('hidden');
+            }
+            const target = document.getElementById(`ritual-step-${stepNumber}`);
+            target.classList.remove('hidden');
+            target.classList.add('fade-in');
+
+            if (stepNumber === 4) {
+                document.getElementById('finalIntentionDisplay').innerText = currentRitualData.intention;
+            }
+        }
+
+        function prepareRelaxAudio() {
+            const audio = document.getElementById('relaxAudio');
+            audio.addEventListener('error', () => {
+                openModal('custom', '播放提示', '找不到 relax.mp3，請確認音檔是否與網頁放在同一資料夾。');
+            });
+        }
+
+        function startRelaxation() {
+            const audio = document.getElementById('relaxAudio');
+            const display = document.getElementById('timerDisplay');
+            const guide = document.getElementById('meditationGuide');
+            const startBtn = document.getElementById('startTimerBtn');
+            const skipBtn = document.getElementById('skipTimerBtn');
+
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 1;
+            audio.load();
+            audio.play().catch(e => {
+                console.log("Audio play error", e);
+                openModal('custom', '播放提示', '無法播放音樂。請確認您的音樂檔案 relax.mp3 是否正確。');
+            });
+
+            let timeLeft = 180; 
+            startBtn.classList.add('hidden');
+            guide.classList.remove('hidden');
+            skipBtn.classList.remove('hidden');
+
+            clearInterval(audioInterval);
+            audioInterval = setInterval(() => {
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                const s = (timeLeft % 60).toString().padStart(2, '0');
+                display.innerText = `${m}:${s}`;
+
+                if (timeLeft <= 0) finishTimer();
+            }, 1000);
+        }
+
+        function finishTimer() {
+            clearInterval(audioInterval);
+            const audio = document.getElementById('relaxAudio');
+            let vol = 1;
+            const fadeout = setInterval(() => {
+                if (vol > 0.05) { vol -= 0.05; audio.volume = vol; } 
+                else { clearInterval(fadeout); audio.pause(); audio.currentTime = 0; }
+            }, 200);
+            document.getElementById('timerDisplay').innerText = "00:00";
+            setTimeout(() => { nextRitualStep(3); }, 1000);
+        }
+
+        function showFinalPrompt() {
+            document.getElementById('preSleepPrompt').classList.remove('hidden');
+        }
+
+        function finishRitual() {
+            appData.unshift(currentRitualData);
+            saveData();
+            openModal('custom', '晚安', '願夢境帶給你需要的指引。<br>明天早上見。');
+            document.getElementById('intentionInput').value = '';
+            document.getElementById('intentionResult').classList.add('hidden');
+            document.getElementById('preSleepPrompt').classList.add('hidden');
+            setTimeout(() => { nextRitualStep(1); switchTab('view-wakeup'); }, 2000);
+        }
+
+        let selectedFeelings = new Set();
+        let targetRecordIndex = -1; 
+        function resetWakeupView() {
+            document.getElementById('wakeup-intro').classList.remove('hidden');
+            document.getElementById('wakeup-success').classList.add('hidden');
+            document.getElementById('dreamInput').value = '';
+            document.getElementById('feelingNoteInput').value = '';
+            document.getElementById('actionInput').value = '';
+            selectedFeelings.clear();
+            document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('selected'));
+            targetRecordIndex = -1;
+            if (appData.length > 0) { if (!appData[0].dreamNote) targetRecordIndex = 0; }
+        }
+        function toggleFeeling(btn) {
+            const val = btn.innerText;
+            if (selectedFeelings.has(val)) { selectedFeelings.delete(val); btn.classList.remove('selected'); } 
+            else { selectedFeelings.add(val); btn.classList.add('selected'); }
+        }
+        function fillAction(text) { document.getElementById('actionInput').value = text; }
+        function saveMorningRecord() {
+            const dream = document.getElementById('dreamInput').value;
+            const action = document.getElementById('actionInput').value;
+            const feelingNote = document.getElementById('feelingNoteInput').value;
+            if (!action) { openModal('custom', '提示', '請至少寫下一個微行動。'); return; }
+            const updateData = { dreamNote: dream || '無紀錄', feelings: Array.from(selectedFeelings), feelingNote: feelingNote, microAction: action };
+            if (targetRecordIndex !== -1) { appData[targetRecordIndex] = { ...appData[targetRecordIndex], ...updateData }; } 
+            else {
+                const newRecord = { date: new Date().toISOString().split('T')[0], theme: '直接記錄', intention: '(無)', createdAt: new Date().toISOString(), microActionDone: false, ...updateData };
+                appData.unshift(newRecord); targetRecordIndex = 0; 
+            }
+            saveData();
+            document.getElementById('wakeup-intro').classList.add('hidden');
+            document.getElementById('wakeup-success').classList.remove('hidden');
+            document.getElementById('displayMicroAction').innerText = action;
+            updateSuccessViewCheckbox();
+        }
+        function updateSuccessViewCheckbox() {
+            const isDone = appData[targetRecordIndex].microActionDone;
+            const check = document.getElementById('todayActionCheck');
+            if (isDone) check.classList.add('checked'); else check.classList.remove('checked');
+        }
+        function toggleTodayActionDone() {
+            if (targetRecordIndex === -1) return;
+            appData[targetRecordIndex].microActionDone = !appData[targetRecordIndex].microActionDone;
+            saveData(); updateSuccessViewCheckbox();
+        }
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            container.innerHTML = '';
+            if (appData.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:50px;">目前還沒有紀錄喔。</div>'; return; }
+            appData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                card.onclick = (e) => { if(e.target.closest('.checkbox-wrapper')) return; toggleCardDetails(index); };
+                const isDoneClass = item.microActionDone ? 'checked' : '';
+                const feelingsText = item.feelings && item.feelings.length > 0 ? item.feelings.join('、') : '';
+                card.innerHTML = `
+                    <div class="card-header"><span class="card-date">${item.date}</span><span class="card-theme">${item.theme}</span></div>
+                    <div class="card-preview">意向：${item.intention}</div>
+                    <div class="card-preview" style="color:var(--text-muted)">微行動：${item.microAction || '未設定'}</div>
+                    <div id="details-${index}" class="card-details">
+                        <div class="detail-block"><span class="detail-label">完整意向</span><div style="line-height:1.4">${item.intention}</div></div>
+                        <div class="detail-block"><span class="detail-label">夢境紀錄</span><div style="white-space: pre-wrap; line-height:1.4">${item.dreamNote || '無紀錄'}</div></div>
+                        <div class="detail-block"><span class="detail-label">感受</span><div>${feelingsText} ${item.feelingNote ? `(${item.feelingNote})` : ''}</div></div>
+                        <div class="detail-block" style="margin-top:20px; background:#334155; padding:15px; border-radius:8px;">
+                            <span class="detail-label">今日微行動</span>
+                            <div style="font-weight:bold; margin-bottom:5px; font-size:16px;">${item.microAction}</div>
+                            <div class="checkbox-wrapper" onclick="toggleHistoryAction(${index})">
+                                <div class="custom-checkbox ${isDoneClass}"></div>
+                                <span style="font-size:14px">已完成</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        function toggleCardDetails(index) {
+            const el = document.getElementById(`details-${index}`);
+            el.classList.toggle('expanded');
+        }
+        function toggleHistoryAction(index) {
+            appData[index].microActionDone = !appData[index].microActionDone;
+            saveData(); renderHistory(); 
+        }
+    </script>
+</body>
+</html>
